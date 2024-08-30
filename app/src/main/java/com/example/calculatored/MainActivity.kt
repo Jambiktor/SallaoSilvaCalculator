@@ -12,12 +12,13 @@ class MainActivity : AppCompatActivity() {
     private var firstValue: String = ""
     private var secondValue: String = ""
     private var isOperatorSelected: Boolean = false
+    private var isResultDisplayed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        display = findViewById(R.id.textView)
+        display = findViewById(R.id.resultTextView)
 
         val buttons = listOf(
             findViewById<Button>(R.id.AC),
@@ -66,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         firstValue = ""
         secondValue = ""
         isOperatorSelected = false
+        isResultDisplayed = false
     }
 
     private fun toggleSign() {
@@ -85,7 +87,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleOperator(op: String) {
-        if (isOperatorSelected) {
+        if (isResultDisplayed) {
+            firstValue = display.text.toString()
+            operator = op
+            isOperatorSelected = true
+            isResultDisplayed = false
+        } else if (isOperatorSelected) {
             secondValue = display.text.toString()
             calculateResult()
             operator = op
@@ -119,8 +126,10 @@ class MainActivity : AppCompatActivity() {
 
             operator = ""
             isOperatorSelected = false
+            isResultDisplayed = true
         }
     }
+
     private fun appendDecimal() {
         if (!display.text.contains(".")) {
             display.append(".")
@@ -128,9 +137,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun appendNumber(number: String) {
-        if (display.text == "0" || isOperatorSelected) {
+        if (display.text == "0" || isOperatorSelected || isResultDisplayed) {
             display.text = number
             isOperatorSelected = false
+            isResultDisplayed = false
         } else {
             display.append(number)
         }
